@@ -1,65 +1,186 @@
-import Image from "next/image";
+import SpendForm from "./components/form/SpendForm";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="overflow-x-hidden">
+      {/* Hero */}
+      <section className="border-b-[6px] border-border py-20">
+        <div className="grid gap-16 lg:grid-cols-2 items-start">
+          {/* Left side */}
+          <div className="space-y-8">
+            <p className="text-sm uppercase tracking-[0.3em] font-body text-red">
+              AI Spend Audit
+            </p>
+            <h1 className="font-headline leading-none text-[clamp(4rem,8vw,10rem)] uppercase ">
+              Your AI Stack Is overpriced
+            </h1>
+            <p className="max-w-2xl text-lg text-muted">
+              Discover wasted AI spend across ChatGPT, Claude, Cursor, Gemini,
+              and more.
+            </p>
+            <button className="border-2 border-border bg-black px-8 py-4 uppercase tracking-widest cursor-pointer text-bg transition-all duration-200 hover:bg-violet-500">
+              Start Audit
+            </button>
+          </div>
+
+          {/* Right Side */}
+          <div className="relative border-[3px] border-border bg-paper p-8">
+            {/* TOP LABEL */}
+            <div className="mb-8 flex items-center justify-between border-b-2 border-border pb-4">
+              <p className="text-sm uppercase tracking-[0.3em]">
+                AI SPEND REPORT
+              </p>
+
+              <p className="bg-red px-3 py-1 text-xs uppercase text-bg">
+                LIVE AUDIT
+              </p>
+            </div>
+
+            {/* TABLE */}
+            <div className="space-y-6 font-mono font-black text-sm uppercase">
+              <div className="flex justify-between border-b border-border pb-2">
+                <span>CHATGPT TEAM</span>
+                <span>$240</span>
+              </div>
+
+              <div className="flex justify-between border-b border-border pb-2">
+                <span>CLAUDE PRO</span>
+                <span>$120</span>
+              </div>
+
+              <div className="flex justify-between border-b border-border pb-2">
+                <span>CURSOR BUSINESS</span>
+                <span>$80</span>
+              </div>
+            </div>
+
+            {/* MASSIVE SAVINGS */}
+            <div className="mt-12">
+              <p className="mb-2 text-sm uppercase tracking-[0.3em] text-red">
+                POTENTIAL SAVINGS
+              </p>
+
+              <h2 className="font-headline text-[clamp(2rem,8vw,7rem)] leading-none">
+                $310
+              </h2>
+
+              <p className="text-xl uppercase">PER MONTH</p>
+            </div>
+
+            {/* ROTATED STAMP */}
+            <div className="absolute -right-6 bottom-4 rotate-12 border-4 border-red px-6 py-2 text-2xl font-black uppercase text-red">
+              OVERPAYING
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Form */}
+      <section className="border-b-[6px] border-border py-20">
+        <div className="mb-16 flex flex-col items-center text-center lg:items-start lg:text-left">
+          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-red">
+            INPUT YOUR STACK
           </p>
+          <h2 className="font-headline text-[clamp(3rem,7vw,6rem)] leading-none uppercase">
+            Enter your AI tools
+          </h2>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="space-y-8">
+          <SpendForm />
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Results */}
+      <section className="border-b-[6px] border-border py-20">
+        <div className="mb-16">
+          <p className="text-xs uppercase font-bold tracking-[0.3rem] text-red mb-4">
+            Audit Results
+          </p>
+          <h2 className="font-headline text-[clamp(3rem,8vw,7rem)] mb-8 leading-none uppercase">
+            Your Ai spend breakdown
+          </h2>
+
+          {/* Grid for breakdown summary */}
+          <div className="grid gap-10 lg:grid-cols-3">
+            {/* Total spend */}
+
+            <div className="border-2 border-border bg-paper p-8">
+              <p className="text-xs uppercase tracking-[0.3rem]">Total Spend</p>
+
+              <h3 className="mt-6 font-headline text-6xl">$560</h3>
+              <p className="mt-2 text-sm uppercase text-muted">
+                per month (estimated)
+              </p>
+            </div>
+
+            {/* Optimised spend */}
+            <div className="border-2 border-border bg-paper p-8">
+              <p className="text-xs uppercase tracking-[0.3em] text-red">
+                Optimized Spend
+              </p>
+
+              <h3 className="mt-6 font-headline text-6xl">$250</h3>
+              <p className="mt-2 text-sm uppercase text-muted">
+                after consolidation
+              </p>
+            </div>
+
+            {/* Savings */}
+            <div className="border-2 border-border bg-paper p-8 relative">
+              <p className="text-xs uppercase tracking-[0.3rem] text-red">
+                Monthly Savings
+              </p>
+
+              <h3 className="mt-6 font-headline text-6xl">$310</h3>
+
+              <p className="text-sm uppercase mt-2 text-muted">
+                wasted ai spend recovery
+              </p>
+              {/* Stamp */}
+
+              <div className="absolute -top-4 right-4 rotate-12 border-2 border-red px-3 py-1 text-xl font-black uppercase text-red">
+                Leak detected
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24">
+        <div className="border-4 border-border bg-black p-12 text-center text-bg relative">
+          <p className="text-xs uppercase tracking-[0.3rem] text-red">
+            Stop Overspending
+          </p>
+          <h2 className="mt-6 font-headline text-[clamp(3rem,6vw,6rem)] leading-none uppercase">
+            Fix Your AI Stack Now
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
+            Most teams waste 20–40% on overlapping AI tools. Audit yours and
+            reclaim your budget in minutes.
+          </p>
+
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row justify-center">
+            <button className="bg-red px-10 py-4 text-black uppercase tracking-widest font-bold hover:bg-white transition">
+              Run Full Audit
+            </button>
+
+            <button className="border-2 border-bg px-10 py-4 uppercase tracking-widest hover:bg-violet-500 transition">
+              Export Report
+            </button>
+          </div>
+
+          {/* Footer */}
+          <p className="mt-10 text-xs uppercase tracking-[0.3em] text-muted">
+            No signup required • Instant analysis
+          </p>
+
+          {/* Stamp */}
+          <div className="absolute right-5 bottom-5 -rotate-12 text-red text-3xl border-red border-4 px-3 py-2">Trusted</div>
+        </div>
+      </section>
+    </main>
   );
 }
