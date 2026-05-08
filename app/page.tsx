@@ -14,11 +14,11 @@ export default function Home() {
             <h1 className="font-headline leading-none text-[clamp(4rem,8vw,10rem)] uppercase ">
               Your AI Stack Is overpriced
             </h1>
-            <p className="max-w-2xl text-lg text-muted">
+            <p className="max-w-2xl text-lg text-black">
               Discover wasted AI spend across ChatGPT, Claude, Cursor, Gemini,
               and more.
             </p>
-            <button className="border-2 border-border bg-black px-8 py-4 uppercase tracking-widest cursor-pointer text-bg transition-all duration-200 hover:bg-violet-500">
+            <button className="border-2 border-border bg-black px-8 py-4 uppercase tracking-widest cursor-pointer text-bg transition-all duration-200 hover:bg-white hover:text-black">
               Start Audit
             </button>
           </div>
@@ -109,7 +109,7 @@ export default function Home() {
               <p className="text-xs uppercase tracking-[0.3rem]">Total Spend</p>
 
               <h3 className="mt-6 font-headline text-6xl">$560</h3>
-              <p className="mt-2 text-sm uppercase text-muted">
+              <p className="mt-2 text-sm uppercase text-black">
                 per month (estimated)
               </p>
             </div>
@@ -121,7 +121,7 @@ export default function Home() {
               </p>
 
               <h3 className="mt-6 font-headline text-6xl">$250</h3>
-              <p className="mt-2 text-sm uppercase text-muted">
+              <p className="mt-2 text-sm uppercase text-black">
                 after consolidation
               </p>
             </div>
@@ -134,7 +134,7 @@ export default function Home() {
 
               <h3 className="mt-6 font-headline text-6xl">$310</h3>
 
-              <p className="text-sm uppercase mt-2 text-muted">
+              <p className="text-sm uppercase mt-2 text-black">
                 wasted ai spend recovery
               </p>
               {/* Stamp */}
@@ -150,35 +150,35 @@ export default function Home() {
       {/* CTA */}
       <section className="py-24">
         <div className="border-4 border-border bg-black p-12 text-center text-bg relative">
-          <p className="text-xs uppercase tracking-[0.3rem] text-red">
+          <p className="text-xs uppercase tracking-[0.3rem] text-warning">
             Stop Overspending
           </p>
           <h2 className="mt-6 font-headline text-[clamp(3rem,6vw,6rem)] leading-none uppercase">
             Fix Your AI Stack Now
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-light">
             Most teams waste 20–40% on overlapping AI tools. Audit yours and
             reclaim your budget in minutes.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row justify-center">
-            <button className="bg-red px-10 py-4 text-black uppercase tracking-widest font-bold hover:bg-white transition">
+            <button className="bg-red px-10 py-4 text-white uppercase tracking-widest font-bold hover:text-black hover:bg-white transition">
               Run Full Audit
             </button>
 
-            <button className="border-2 border-bg px-10 py-4 uppercase tracking-widest hover:bg-violet-500 transition">
+            <button className="border-2 border-bg px-10 py-4 uppercase tracking-widest hover:text-black hover:bg-white transition">
               Export Report
             </button>
           </div>
 
           {/* Footer */}
-          <p className="mt-10 text-xs uppercase tracking-[0.3em] text-muted">
+          <p className="mt-10 text-xs uppercase tracking-[0.3em] text-black">
             No signup required • Instant analysis
           </p>
 
           {/* Stamp */}
-          <div className="absolute right-5 bottom-5 -rotate-12 text-red text-3xl border-red border-4 px-3 py-2">Trusted</div>
+          <div className="absolute right-5 bottom-5 -rotate-12 text-warning text-3xl border-warning border-4 px-3 py-2">Trusted</div>
         </div>
       </section>
     </main>
