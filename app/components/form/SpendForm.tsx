@@ -2,29 +2,11 @@
 
 import { tools } from "@/data/tools";
 import { useEffect, useState } from "react";
-
-/* -------------------------------------------------------------------------- */
-/*                                  TYPES                                     */
-/* -------------------------------------------------------------------------- */
-
-type ToolsListItem = {
-  id: string;
-  tool: string;
-  plan: string;
-  spend: string;
-  seats: string;
-  teamSize: string;
-  useCase: string;
-};
-
-/* -------------------------------------------------------------------------- */
-/*                               MAIN COMPONENT                               */
-/* -------------------------------------------------------------------------- */
+import { ToolsListItem } from "@/types/audit";
+import { useRouter } from "next/navigation";
 
 export default function SpendForm() {
-  /* ------------------------------------------------------------------------ */
-  /*                               FORM STATES                                */
-  /* ------------------------------------------------------------------------ */
+  /*                               Form states                                */
 
   // Selected AI tool
   const [selectedTool, setSelectedTool] = useState("");
@@ -44,53 +26,66 @@ export default function SpendForm() {
   // Primary use case
   const [useCase, setUseCase] = useState("");
 
+  // Routing
+  const router = useRouter();
+
   // List of added tools
+  // const [toolsList, setToolsList] = useState<ToolsListItem[]>(() => {
+  //   if(typeof window !== undefined) {
+  //     const saved = localStorage.getItem('audit-tools');
+  //     return saved ? JSON.parse(saved) : [];
+  //   }
+  //   return [];
+  // });
+
   const [toolsList, setToolsList] = useState<ToolsListItem[]>([]);
 
-  /* ------------------------------------------------------------------------ */
-  /*                         CURRENT SELECTED TOOL                            */
-  /* ------------------------------------------------------------------------ */
+  /*                         Current Selected tool                            */
 
   // Finds the currently selected tool object
   // Used to dynamically show plan options
-  const currentTool = tools.find(
-    (tool) => tool.name === selectedTool
-  );
+  const currentTool = tools.find((tool) => tool.name === selectedTool);
 
-  /* ------------------------------------------------------------------------ */
-  /*                     LOAD DATA FROM LOCAL STORAGE                         */
-  /* ------------------------------------------------------------------------ */
+  /*                     Load data from local storage                         */
 
   // Runs once when component mounts
   // Loads previously saved tools from browser storage
   useEffect(() => {
-    const savedTools = localStorage.getItem("audit-tools");
+    try {
+      const savedTools = localStorage.getItem("audit-tools");
 
-    if (savedTools) {
-      setToolsList(JSON.parse(savedTools));
+      if (savedTools) {
+        setToolsList(JSON.parse(savedTools));
+      }
+    } catch (e) {
+      console.error("Failed to load saved tools : ", e);
     }
   }, []);
 
-  /* ------------------------------------------------------------------------ */
-  /*                    SAVE DATA TO LOCAL STORAGE                            */
-  /* ------------------------------------------------------------------------ */
+  /*                    Save data to local storage                            */
 
   // Runs whenever toolsList changes
   // Persists form data across page reloads
   useEffect(() => {
-    localStorage.setItem(
-      "audit-tools",
-      JSON.stringify(toolsList)
-    );
+    try {
+      localStorage.setItem("audit-tools", JSON.stringify(toolsList));
+    } catch (e) {
+      console.error("Failed to save tools : ", e);
+    }
   }, [toolsList]);
 
-  /* ------------------------------------------------------------------------ */
-  /*                             ADD TOOL LOGIC                               */
-  /* ------------------------------------------------------------------------ */
+  /*                             Add tool logic                               */
 
   const handleAdd = () => {
     // Basic validation
-    if (!selectedTool || !selectedPlan || !spend || !seats || !teamSize || !useCase) {
+    if (
+      !selectedTool ||
+      !selectedPlan ||
+      !spend ||
+      !seats ||
+      !teamSize ||
+      !useCase
+    ) {
       alert("Please fill all fields");
       return;
     }
@@ -118,14 +113,18 @@ export default function SpendForm() {
     setUseCase("");
   };
 
+  /*                           Submit Handler                                 */
+  const handleSubmit = () => {
+    localStorage.setItem("audit-tools", JSON.stringify(tools));
+    router.push("/audit");
+  };
+
   /* ------------------------------------------------------------------------ */
   /*                           DELETE TOOL LOGIC                              */
   /* ------------------------------------------------------------------------ */
 
   const handleDelete = (id: string) => {
-    setToolsList((prev) =>
-      prev.filter((item) => item.id !== id)
-    );
+    setToolsList((prev) => prev.filter((item) => item.id !== id));
   };
 
   /* ------------------------------------------------------------------------ */
@@ -133,10 +132,7 @@ export default function SpendForm() {
   /* ------------------------------------------------------------------------ */
 
   return (
-    <section
-      aria-labelledby="spend-form-heading"
-      className="space-y-10"
-    >
+    <section aria-labelledby="spend-form-heading" className="space-y-10">
       {/* Hidden heading for accessibility */}
       <h2 id="spend-form-heading" className="sr-only">
         AI Spend Audit Form
@@ -144,13 +140,11 @@ export default function SpendForm() {
 
       {/* Main Form Container */}
       <div className="border-2 border-border bg-paper p-6">
-
         {/* ------------------------------------------------------------------ */}
         {/*                             INPUT GRID                              */}
         {/* ------------------------------------------------------------------ */}
 
         <div className="grid gap-10 md:grid-cols-2">
-
           {/* ---------------------------- TOOL INPUT ------------------------- */}
 
           <div>
@@ -218,8 +212,7 @@ export default function SpendForm() {
               htmlFor="use-case"
               className="mb-2 block text-xs uppercase tracking-[0.3em]"
             >
-              Primary Use Case{" "}
-              <span className="text-red">*</span>
+              Primary Use Case <span className="text-red">*</span>
             </label>
 
             <select
@@ -305,14 +298,24 @@ export default function SpendForm() {
 
           {/* -------------------------- ADD BUTTON --------------------------- */}
 
-          <div>
-            <button
-              type="button"
-              onClick={handleAdd}
-              className="cursor-pointer border-2 border-border bg-black px-4 py-4 uppercase text-white transition hover:bg-violet-700"
-            >
-              + Add Tool
-            </button>
+          <div className="flex justify-start gap-6">
+            <div>
+              <button
+                onClick={handleSubmit}
+                className="border-2 border-border cursor-pointer bg-black px-8 py-4 uppercase tracking-widest text-bg hover:bg-white hover:text-black transition"
+              >
+                Run Audit
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={handleAdd}
+                className="cursor-pointer border-2 border-border bg-black px-4 py-4 uppercase text-white transition hover:bg-violet-700"
+              >
+                + Add Tool
+              </button>
+            </div>
           </div>
         </div>
 
@@ -326,9 +329,7 @@ export default function SpendForm() {
               Added Tools
             </p>
 
-            <p className="text-2xl">
-              No tools added yet.
-            </p>
+            <p className="text-2xl">No tools added yet.</p>
           </div>
         )}
 
@@ -338,7 +339,6 @@ export default function SpendForm() {
 
         {toolsList.length > 0 && (
           <div className="mt-6 border-2 border-border bg-paper p-6">
-
             {/* Section Heading */}
             <p className="mb-8 text-xs uppercase tracking-[0.3em]">
               Added Tools
@@ -369,7 +369,6 @@ export default function SpendForm() {
 
             {/* Tool Rows */}
             <div className="space-y-4 pt-6">
-
               {toolsList.map((item) => (
                 <div
                   key={item.id}
@@ -377,9 +376,7 @@ export default function SpendForm() {
                 >
                   {/* Tool */}
                   <div>
-                    <p className="font-semibold uppercase">
-                      {item.tool}
-                    </p>
+                    <p className="font-semibold uppercase">{item.tool}</p>
 
                     <p className="text-sm uppercase text-black/70">
                       {item.plan}
@@ -387,9 +384,7 @@ export default function SpendForm() {
                   </div>
 
                   {/* Use Case */}
-                  <p className="uppercase tracking-wide">
-                    {item.useCase}
-                  </p>
+                  <p className="uppercase tracking-wide">{item.useCase}</p>
 
                   {/* Spend + Seats */}
                   <p>
@@ -397,9 +392,7 @@ export default function SpendForm() {
                   </p>
 
                   {/* Team Size */}
-                  <p>
-                    {item.teamSize} users
-                  </p>
+                  <p>{item.teamSize} users</p>
 
                   {/* Delete Button */}
                   <button
