@@ -1,6 +1,21 @@
 import SpendForm from "./components/form/SpendForm";
-
+import { RunAudit } from "@/lib/audit-engine";
+import { pricingData } from "@/lib/pricing-data";
 export default function Home() {
+  console.log(
+    RunAudit([
+      {
+        id: "1",
+        tool: "ChatGPT",
+        plan: "Enterprise",
+        spend: "120",
+        seats: "2",
+        teamSize: "2",
+        useCase: "research",
+      },
+    ]),
+  );
+
   return (
     <main className="overflow-x-hidden">
       {/* Hero */}
@@ -178,7 +193,9 @@ export default function Home() {
           </p>
 
           {/* Stamp */}
-          <div className="absolute right-5 bottom-5 -rotate-12 text-warning text-3xl border-warning border-4 px-3 py-2">Trusted</div>
+          <div className="absolute right-5 bottom-5 -rotate-12 text-warning text-3xl border-warning border-4 px-3 py-2">
+            Trusted
+          </div>
         </div>
       </section>
     </main>

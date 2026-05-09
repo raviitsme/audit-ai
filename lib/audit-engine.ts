@@ -1,132 +1,138 @@
-import type { ToolsListItem } from "@/types/audit";
+import { ToolsListItem } from "@/types/audit";
 import { pricingData } from "./pricing-data";
-import { findCheaperPlan } from "./helpers/findCheaperPlan";
-import { findAltTool } from "./helpers/findAltTool";
+import findAltTool from "./helpers/findAltTool";
+import checkCreditsEligibility from "./helpers/creditsEligibility";
 
-export type AuditResult = ToolsListItem & {
-    expectedSpend: number;
-    actualSpend: number;
-    monthlyWaste: number;
-    yearlyWaste: number;
-    utilization: number;
-    unusedSeats: number;
-    severity: "LOW" | "MEDIUM" | "HIGH";
-    recommendation: string;
-    reasoning: string[];
-    altSavings: number;
-    planSavings: number;
-    totalSavings: number;
-    potentialSavings : number;
-};
+export function RunAudit(tools: ToolsListItem[]) {
+    const auditResults = tools.map((item) => {
+        const currentPlan: any = pricingData[item.tool as keyof typeof pricingData]?.[item.plan as keyof (typeof pricingData)[keyof typeof pricingData]];
 
-export function RunAudit(tools: ToolsListItem[]): AuditResult[] {
-    return tools.map((tool) => {
-        // Tool Values
-        const seats = Number(tool.seats);
-        const spend = Number(tool.spend);
-        const teamSize = Number(tool.teamSize);
+        if (!currentPlan) {
+    return {
+        tool: item.tool,
+        currentPlan: item.plan,
+        recommendedPlan: item.plan,
+        currentMonthlyCost: null,
+        optimizedMonthlyCost: null,
+        monthlySavings: 0,
+        annualSavings: 0,
+        isAppropriate: false,
+        alternativeTool: null,
+        alternativePlan: null,
+        alternativeMonthlyCost: null,
+        alternativeSavings: 0,
+        creditsEligible: false,
+        reason: "Pricing data not found for this plan",
+    };
+}
 
-        // Tools and plans
-        const toolData = pricingData[tool.tool as keyof typeof pricingData];
+        // Total number of seats from user
+        const seats = Number(item.seats);
 
-        const planData = toolData?.[tool.plan as keyof typeof toolData];
+        // User use case
+        const useCase = item.useCase.toLowerCase();
 
-        // Plan Price
-        const pricePerSeat =
-            typeof planData === "object" ? (planData as any).price : planData || 0;
+        // Current Monthly Cost
+        const currentMonthlyCost = currentPlan.price !== null ? currentPlan.price * seats : null;
 
-        // Unused Seats
-        const unusedSeats = seats > teamSize ? seats - teamSize : 0;
+        // Valid seats
+        const validSeats = seats >= currentPlan.minSeats && seats <= currentPlan.recommendedMaxSeats;
 
-        // Utilization
-        const utilization = seats > 0 ? Math.round((teamSize / seats) * 100) : 0;
+        // Valid Use cases
+        const validUseCase = currentPlan.useCases.includes(item.useCase.toLowerCase());
 
-        // Monthly waste
-        const monthlyWaste = unusedSeats > 0 ? (spend / seats) * unusedSeats : 0;
+        // Alternative Tool
+        const bestAltTool = findAltTool({ currentTool: item.tool, seats, useCase, currentMonthlyCost })
 
-        // Yearly waste
-        const yearlyWaste = monthlyWaste * 12;
+        // Check credit eligibility
+        const eligibilityResults = checkCreditsEligibility({ currentPlan, currentMonthlyCost });
 
-        let potentialSavings = monthlyWaste;
+        // All plans for current tools
+        const toolPlans = pricingData[item.tool as keyof typeof pricingData];
 
-        let severity: "LOW" | "MEDIUM" | "HIGH" = "LOW";
+        let bestPlan: any = null;
+        let lowestCost = currentMonthlyCost ?? Infinity;
 
-        if (utilization < 50) {
-            severity = "HIGH";
-        } else if (utilization < 80) {
-            severity = "MEDIUM";
-        }
+        Object.entries(toolPlans).forEach(([planName, planData]: any) => {
+            // Skip current plan
+            if (item.plan === planName) return;
 
-        // Recommendations
+            // Skip custom pricing
+            if (planData.price === null) return;
 
-        let recommendation = "Current plan usage looks healthy";
+            // Skip more expensive plan
+            if (planData.price >= currentPlan.price) return;
 
-        const cheaperPlan = findCheaperPlan(tool.tool, tool.plan, seats);
-        const altTool = findAltTool(tool.tool, tool.useCase, spend);
+            // Validate seats
+            const seatsValid = seats >= planData.minSeats && seats <= planData.recommendedMaxSeats;
 
-        if (utilization < 50) {
-            recommendation = `Current seat utilization is significantly below expected operational efficiency.
-                        Downgrading plans or reducing seats may help in reducing costs.`;
-        } else if (unusedSeats > 0) {
-            recommendation = `${unusedSeats} unused seat(s) detected! Consider reducing seat allocation to minimize monthly spend.`;
-        } else if (altTool) {
-            potentialSavings += altTool.savings;
-            recommendation = `${altTool.tool} may provide similar ${tool.useCase} capability with approximately $${altTool.savings}/month lower spend.`;
-        } else if (cheaperPlan) {
-            potentialSavings += cheaperPlan.savings;
-            recommendation = `${cheaperPlan.planName} may satisfy current usage requirements with approximately $${cheaperPlan.savings}/month lower spend.`;
-        } 
+            // Validate use case
+            const useCaseValid = planData.useCases.includes(useCase);
 
-        const planSavings = cheaperPlan ? cheaperPlan.savings : 0;
+            // Ignore invalid plans
+            if (!seatsValid || !useCaseValid) return;
 
-        const altSavings = altTool ? altTool.savings : 0;
+            // Candidate cost
+            const candidateCost = planData.price * seats;
 
-        const totalSavings = monthlyWaste + planSavings + altSavings;
+            // Cheapest Valid Option
+            if (candidateCost < lowestCost) {
+                lowestCost = candidateCost;
+                bestPlan = {
+                    name: planName,
+                    monthlyCost: candidateCost,
+                }
+            }
+        });
 
-        // Reasoning
-        const reasoning: string[] = [];
+        // Savings
 
-        reasoning.push(`Actual spend reported: $${spend}/month`);
-        reasoning.push(`Expected spend (based on seats): $${pricePerSeat * seats}/month`);
-        reasoning.push(`Plan cost per seat: $${pricePerSeat}/month`);
+        const monthlySavings = bestPlan && currentMonthlyCost ? currentMonthlyCost - bestPlan.monthlyCost : 0;
 
-        reasoning.push(`Utilization rate: ${utilization}%`);
+        const annualSavings = monthlySavings * 12;
 
-        if (utilization < 50) {
-            reasoning.push(`Low utilization indicates overprovisioning`);
-        }
+        const alternativeSavings = bestAltTool && currentMonthlyCost !== null ? currentMonthlyCost - bestAltTool.monthlyCost : 0;
 
-        if (unusedSeats > 0) {
-            reasoning.push(`Unused capacity detected: ${unusedSeats} seat(s) not utilized`);
-        }
+        // Final Decision
+        const isAppropriate = !bestAltTool && !bestPlan && !eligibilityResults?.eligible;
+        let reason = "";
 
-        if (cheaperPlan) {
-            reasoning.push(
-                `Better plan available: ${cheaperPlan.planName} could reduce cost by ~$${cheaperPlan.savings}/month`
-            );
-        }
+        if (bestAltTool) {
+            reason = `Comparable ${useCase} functionality may be available through ${bestAltTool.tool} ${bestAltTool.plan} at a lower monthly cost.`;
 
-        if (altTool) {
-            reasoning.push(
-                `Alternative tool option: ${altTool.tool} may reduce spend by ~$${altTool.savings}/month`
-            );
+        } else if (bestPlan) {
+            reason = `${bestPlan.name} supports the current seat count and use case at a lower monthly cost.`;
+
+        } else if (eligibilityResults?.eligible) {
+            reason = eligibilityResults.message;
+
+        } else if (!validSeats) {
+            reason = "Current plan minimum seat requirements exceed the stated usage needs.";
+
+        } else if (!validUseCase) {
+            reason = "Current plan may not match the selected primary use case";
+
+        } else {
+            reason = "Current plan usage looks financially appropriate for the stated team size and use case";
         }
 
         return {
-            ...tool,
-            expectedSpend: pricePerSeat * seats,
-            actualSpend: spend,
-            monthlyWaste,
-            yearlyWaste,
-            utilization,
-            unusedSeats,
-            severity,
-            recommendation,
-            reasoning,
-            planSavings,
-            altSavings,
-            totalSavings,
-            potentialSavings,
-        };
+            tool: item.tool,
+            currentPlan: item.plan,
+            recommendedPlan: bestPlan?.name || item.plan,
+            currentMonthlyCost,
+            optimizedMonthlyCost: bestPlan?.monthlyCost || currentMonthlyCost,
+            monthlySavings,
+            annualSavings,
+            isAppropriate,
+            alternativeTool: bestAltTool?.tool || null,
+            alternativePlan: bestAltTool?.plan || null,
+            alternativeMonthlyCost: bestAltTool?.monthlyCost || null,
+            alternativeSavings,
+            creditsEligible: eligibilityResults?.eligible || false,
+            reason,
+        }
     });
+
+    return auditResults;
 }

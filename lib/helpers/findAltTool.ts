@@ -1,38 +1,43 @@
 import { pricingData } from "../pricing-data";
 
-export function findAltTool(currentTool: string, useCase: string, currentSpend: number) {
-    const tools = pricingData;
+type Params = {
+    currentTool : string,
+    seats : number,
+    useCase : string,
+    currentMonthlyCost : number | null
+}
 
-    let altTool: null | {
-        tool: string;
-        savings: number;
-    } = null;
+export default function findAltTool({ currentTool, seats, useCase, currentMonthlyCost } : Params) {
+    let bestAlt : any = null;
 
-    for (const [toolName, plans] of Object.entries(tools)) {
-        // Skip same tool name 
-        if (toolName === currentTool) continue;
+    let lowestAltCost = currentMonthlyCost ?? Infinity;
+    
+    Object.entries(pricingData).forEach(([toolName, toolPlans] : any) => {
+        if(toolName === currentTool) return;
 
-        for (const [planName, planData] of Object.entries(plans)) {
-            const data = planData as any;
+        Object.entries(toolPlans).forEach(([planName, planData] : any) => {
+            if(planName.price === null) return;
 
-            const price = data.price;
-            const useCases: string[] = data.useCases || [];
+            const seatsValid = seats >= planData.minSeats && seats <= planData.recommendedMaxSeats;
 
-            // skip if no match for use case
-            if (!useCases.includes(useCase)) continue;
+            // Use case validation
+            const useCaseValid = planData.useCases.includes(useCase);
 
-            // must be cheaper than current spend
-            if (price < currentSpend) {
-                const savings = currentSpend - price;
+            // Ignore invalid plans
+            if(!seatsValid || !useCaseValid) return;
 
-                if (!altTool || savings > altTool.savings) {
-                    altTool = {
-                        tool: toolName,
-                        savings,
-                    };
-                }
-            }
-        }
-    }
-    return altTool;
+            const candidateCost = planData.price * seats;
+            
+            if(candidateCost >= lowestAltCost) return;
+
+            lowestAltCost = candidateCost;
+
+            bestAlt = {
+                tool : toolName,
+                plan : planName,
+                monthlyCost : candidateCost
+            };
+        });
+    })
+    return bestAlt;
 }
