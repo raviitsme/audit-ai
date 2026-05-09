@@ -113,23 +113,22 @@ export default function SpendForm() {
     setUseCase("");
   };
 
+
   /*                           Submit Handler                                 */
+  
   const handleSubmit = () => {
-    localStorage.setItem("audit-tools", JSON.stringify(tools));
+
+    localStorage.setItem("audit-tools", JSON.stringify(toolsList));
     router.push("/audit");
   };
 
-  /* ------------------------------------------------------------------------ */
   /*                           DELETE TOOL LOGIC                              */
-  /* ------------------------------------------------------------------------ */
 
   const handleDelete = (id: string) => {
     setToolsList((prev) => prev.filter((item) => item.id !== id));
   };
 
-  /* ------------------------------------------------------------------------ */
   /*                                  UI                                      */
-  /* ------------------------------------------------------------------------ */
 
   return (
     <section aria-labelledby="spend-form-heading" className="space-y-10">
@@ -140,9 +139,8 @@ export default function SpendForm() {
 
       {/* Main Form Container */}
       <div className="border-2 border-border bg-paper p-6">
-        {/* ------------------------------------------------------------------ */}
+
         {/*                             INPUT GRID                              */}
-        {/* ------------------------------------------------------------------ */}
 
         <div className="grid gap-10 md:grid-cols-2">
           {/* ---------------------------- TOOL INPUT ------------------------- */}
@@ -319,9 +317,9 @@ export default function SpendForm() {
           </div>
         </div>
 
-        {/* ------------------------------------------------------------------ */}
+
         {/*                         EMPTY STATE UI                              */}
-        {/* ------------------------------------------------------------------ */}
+
 
         {toolsList.length === 0 && (
           <div className="mt-6 border-2 border-border bg-paper p-6">
@@ -333,9 +331,9 @@ export default function SpendForm() {
           </div>
         )}
 
-        {/* ------------------------------------------------------------------ */}
+
         {/*                          TOOLS TABLE                                */}
-        {/* ------------------------------------------------------------------ */}
+
 
         {toolsList.length > 0 && (
           <div className="mt-6 border-2 border-border bg-paper p-6">

@@ -17,11 +17,11 @@ export default function AuditPage() {
     setResults(audit);
   }, []);
 
-  const totalActual = results.reduce((acc, r) => acc + r.actualSpend, 0);
+  const totalActual = results.reduce((acc, r) => acc + Number(r.actualSpend || 0), 0);
 
-  const totalOptimized = results.reduce((acc, r) => acc + r.expectedSpend, 0);
+  const totalOptimized = results.reduce((acc, r) => acc + Number(r.expectedSpend || 0), 0);
 
-  const totalSavings = results.reduce((acc, r) => acc + r.potentialSavings, 0);
+  const totalSavings = results.reduce((acc, r) => acc + Number(r.potentialSavings || 0), 0);
 
   const optimizedSpend = Math.max(totalActual - totalSavings, 0);
 
@@ -48,7 +48,7 @@ export default function AuditPage() {
       {/* Summary */}
       <section className="grid gap-6 md:grid-cols-3">
         {/* CURRENT SPEND */}
-        <div className="border-2 border-black p-6">
+        <div className="border-2 p-6">
           <p className="text-xs uppercase tracking-[0.2em]">Current Spend</p>
 
           <h2 className="mt-4 text-4xl font-black">
@@ -59,7 +59,7 @@ export default function AuditPage() {
         </div>
 
         {/* OPTIMIZED */}
-        <div className="border-2 border-black p-6">
+        <div className="border-2 p-6">
           <p className="text-xs uppercase tracking-[0.2em]">Optimized Spend</p>
 
           <h2 className="mt-4 text-4xl font-black">
@@ -127,13 +127,13 @@ export default function AuditPage() {
           {results.map((item, index) => (
             <div
               key={`${item.tool}-${index}`}
-              className="border-2 border-black p-6 space-y-5 bg-white"
+              className="border-2 border-white p-6 space-y-5 bg-black/90"
             >
               {/* Header */}
-              <div className="flex justify-between items-start">
+              <div className="flex text-white justify-between items-start">
                 <div>
                   <p className="font-black uppercase text-lg">{item.tool}</p>
-                  <p className="text-xs uppercase tracking-widest text-gray-600">
+                  <p className="text-xs uppercase tracking-widest text-white">
                     {item.plan}
                   </p>
                 </div>
@@ -152,20 +152,20 @@ export default function AuditPage() {
               </div>
 
               {/* Insights of amount */}
-              <div className="grid grid-cols-3 gap-4 text-sm">
-                <div className="border p-3">
-                  <p className="text-xs uppercase text-gray-500">Current</p>
-                  <p className="font-bold">${item.actualSpend}</p>
+              <div className="grid text-white border-white grid-cols-3 gap-4 text-sm">
+                <div className="border border-white p-3">
+                  <p className="text-xs uppercase text-white">Current</p>
+                  <p className="font-bold text-white">${Number(item.actualSpend || 0).toFixed(0)}</p>
                 </div>
 
                 <div className="border p-3">
-                  <p className="text-xs uppercase text-gray-500">Optimized</p>
-                  <p className="font-bold">${item.expectedSpend}</p>
+                  <p className="text-xs uppercase text-white">Optimized</p>
+                  <p className="font-bold">${Number(item.expectedSpend || 0).toFixed(0)}</p>
                 </div>
 
                 <div className="border p-3">
-                  <p className="text-xs uppercase text-gray-500">Waste</p>
-                  <p className="font-bold text-red">${item.monthlyWaste}</p>
+                  <p className="text-xs uppercase text-white">Waste</p>
+                  <p className="font-bold text-red">${Number(item.monthlyWaste || 0).toFixed(0)}</p>
                 </div>
               </div>
 
@@ -191,7 +191,7 @@ export default function AuditPage() {
               </div>
 
               {/* Recommendation */}
-              <div className="border-l-4 border-black pl-4">
+              <div className="border-l-4 text-white border-white pl-4">
                 <p className="text-sm font-medium leading-snug">
                   {item.recommendation}
                 </p>
@@ -199,11 +199,11 @@ export default function AuditPage() {
 
               {/* Reasoning */}
               <details className="text-sm">
-                <summary className="cursor-pointer uppercase text-xs tracking-widest text-gray-600">
+                <summary className="cursor-pointer uppercase text-xs tracking-widest text-white">
                   View Audit Reasoning
                 </summary>
 
-                <div className="mt-3 space-y-1 text-xs text-gray-700">
+                <div className="mt-3 space-y-1 text-xs text-white">
                   {item.reasoning.map((r: string, i: number) => (
                     <p key={i}>• {r}</p>
                   ))}

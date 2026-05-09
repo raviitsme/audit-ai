@@ -18,7 +18,7 @@ export default function Home() {
               Discover wasted AI spend across ChatGPT, Claude, Cursor, Gemini,
               and more.
             </p>
-            <button className="border-2 border-border bg-black px-8 py-4 uppercase tracking-widest cursor-pointer text-bg transition-all duration-200 hover:bg-white hover:text-black">
+            <button className="border-2 border-border bg-black px-8 py-4 uppercase tracking-widest cursor-pointer text-bg transition-all duration-200 hover:bg-bg hover:text-black">
               Start Audit
             </button>
           </div>
