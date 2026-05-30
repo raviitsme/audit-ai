@@ -170,6 +170,11 @@ export default function SpendForm() {
     }
   };
 
+  const handleDeleteTool = (idToDelete : string) => {
+    const updatedList = addedTools.filter((tool) => tool.id !== idToDelete);
+    setAddedTools(updatedList);
+  }
+
   return (
     // Mobile : flex-col, Desktop : flex-row
     <div className="relative p-6 md:p-12 flex flex-col md:flex-row w-full gap-4 min-h-screen border-2 border-black">
@@ -268,7 +273,7 @@ export default function SpendForm() {
         </h1>
         <div className="p-5 w-full flex-1 flex flex-col gap-4 overflow-y-auto min-h-75">
           {addedTools.length === 0 ? (
-            <p className="text-zinc-500 font-mono text-center text-sm mt-10">
+            <p className="text-zinc-100 font-mono text-center text-sm mt-10">
               No tools added yet!
             </p>
           ) : (
@@ -280,6 +285,7 @@ export default function SpendForm() {
                 costPerSeat={tool.costPerSeat}
                 noOfSeats={tool.noOfSeats}
                 monthlySpend={tool.monthlySpend}
+                onDelete={() => handleDeleteTool(tool.id)}
               />
             ))
           )}

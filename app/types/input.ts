@@ -30,6 +30,7 @@ export interface ToolCardProps {
     costPerSeat? : string | number,
     noOfSeats? : string | number,
     monthlySpend : string | number,
+    onDelete : () => void,
 }
 
 export interface AddedToolItem {
