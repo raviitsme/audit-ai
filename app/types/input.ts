@@ -34,15 +34,21 @@ export interface ToolCardProps {
 }
 
 export interface AddedToolItem {
-    id : string,
-    toolName : string,
-    planName : string,
-    costPerSeat : string | number,
-    noOfSeats : string | number,
-    monthlySpend : string | number,
+    id: string;
+    toolId: string;
+    toolName: string;
+    planName: string;
+    useCase: string;
+    teamSize: number;
+    costPerSeat: string | number;
+    noOfSeats: string | number;
+    monthlySpend: string | number;
 }
 
 export interface PlanPriceDetail {
     costPerSeat : number | string,
     isAPI : boolean,
+    minSeats : number,
+    maxSeats : number,
+    tier: "individual" | "team" | "enterprise";
 }

@@ -12,12 +12,12 @@ export const aiToolsPlansData = [
   {
     toolId: "claude",
     name: "Claude (Anthropic)",
-    plans: ["Free", "Pro", "Max", "Team", "Enterprise", "API direct"]
+    plans: ["Free", "Pro", "Max", "Team", "Enterprise"]
   },
   {
     toolId: "chatgpt",
     name: "ChatGPT (OpenAI)",
-    plans: ["Plus", "Team", "Enterprise", "API direct"]
+    plans: ["Plus", "Team", "Enterprise"]
   },
   {
     toolId: "anthropic-api",
@@ -33,6 +33,11 @@ export const aiToolsPlansData = [
     toolId: "gemini",
     name: "Gemini",
     plans: ["Pro", "Ultra", "API"]
+  },
+  {
+    toolId : "gemini-api",
+    name : "Gemini API direct",
+    plans : ["Consumption / Usage-Based Plan"]
   },
   {
     toolId: "v0",

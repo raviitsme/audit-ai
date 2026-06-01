@@ -1,5 +1,5 @@
 "use client";
-
+import { checkPlanFit } from "../lib/audit/rules/checkPlanFit";
 import { useEffect, useState } from "react";
 import { TextInput, SelectInput } from "../components/Inputs";
 import { aiToolsPlansData, useCases } from "../data/tools";
@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import ToolCard from "../components/ToolCard";
 import { AddedToolItem } from "../types/input";
 import { aiToolsPricingData } from "../data/pricingData";
+import { checkSameVendorSavings } from "../lib/audit/rules/checkSameVendorPlan";
 
 const dummyAddedTools = [
   {
@@ -149,10 +150,13 @@ export default function SpendForm() {
         const newTool: AddedToolItem = {
           id: Date.now().toString(),
           toolName: activeTool?.name || "Custom Tool",
-          planName: selectedPlan.toUpperCase(),
+          planName: selectedPlan,
           noOfSeats: calculatedSeats,
           costPerSeat: calculatedCost,
           monthlySpend: calculatedSpend,
+          useCase: selectedCase,
+          teamSize: Number(teamSize),
+          toolId: selectedToolId,
         };
 
         setAddedTools([...addedTools, newTool]);
@@ -170,10 +174,10 @@ export default function SpendForm() {
     }
   };
 
-  const handleDeleteTool = (idToDelete : string) => {
+  const handleDeleteTool = (idToDelete: string) => {
     const updatedList = addedTools.filter((tool) => tool.id !== idToDelete);
     setAddedTools(updatedList);
-  }
+  };
 
   return (
     // Mobile : flex-col, Desktop : flex-row
@@ -258,7 +262,11 @@ export default function SpendForm() {
             + Add Tools
           </Button>
           <Button
-            onClick={() => console.log("Current stack : ", addedTools)}
+            onClick={() => {
+              addedTools.forEach((tool) => {
+                console.log(checkSameVendorSavings(tool));
+              });
+            }}
             className="w-full sm:w-auto py-3 bg-black text-bg border-[3px] hover:border-[3px] hover:bg-bg hover:text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           >
             Run Audit

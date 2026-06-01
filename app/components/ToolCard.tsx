@@ -23,7 +23,7 @@ export default function ToolCard({
 
           <button
             onClick={onDelete}
-            className="bg-red-600 text-white font-bold px-2 py-1 text-xs uppercase border border-white hover:bg-red-700 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]"
+            className="bg-red-600 text-white cursor-pointer font-bold px-2 py-1 text-xs uppercase border border-white hover:bg-red-700 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]"
           >
             Delete
           </button>
